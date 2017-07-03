@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +17,15 @@ import com.company.demo.exceptions.ApplicationException;
 import com.company.demo.model.Customer;
 import com.company.demo.service.CustomerService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 
 @RestController
 @RequestMapping(value="/customer")
+@Api(value="customerApi", description="Operations pertaining to customer entity")
 public class CustomerController  {
 	
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
@@ -27,6 +33,11 @@ public class CustomerController  {
 	@Autowired
 	private CustomerService customerService;
 	
+	@ApiOperation(value = "Get all customers", response = List.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully retrieved list")
+	}
+	)
 	@RequestMapping(value="/",method = RequestMethod.GET)
 	public List<Customer> getAllCustomers(){
 		logger.log(Level.FINE, "Start");
@@ -38,7 +49,14 @@ public class CustomerController  {
 	};
 	
 	
-	@RequestMapping(value="/{id}",method = RequestMethod.GET)
+	
+	@ApiOperation(value = "Get a customer by ID", response = List.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully retrieved customer"),
+	        @ApiResponse(code = 500, message = "Customer does not exist")
+	}
+	)
+	@RequestMapping(value="/{id}",method = RequestMethod.GET,produces = "application/json")
 	public Customer getCustomer(@PathVariable Long id) throws ApplicationException {
 		logger.log(Level.FINE, "Start");
 		
@@ -54,8 +72,12 @@ public class CustomerController  {
 	}
 	
 	
-	
-	@RequestMapping(value="/add",method = RequestMethod.POST)
+	@ApiOperation(value = "Add a customer")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully retrieved customer")
+	}
+	)
+	@RequestMapping(value="/add",method = RequestMethod.POST,produces = "application/json")
 	public Customer addCustomer(@RequestParam(value="name") String name) throws ApplicationException{
 		logger.log(Level.FINE, "Start");
 		
@@ -66,8 +88,13 @@ public class CustomerController  {
 	}
 	
 	
-	
-	@RequestMapping(value="/update",method = RequestMethod.PUT)
+	@ApiOperation(value = "Update a customer")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully retrieved customer"),
+	        @ApiResponse(code = 500, message = "Customer does not exist")
+	}
+	)
+	@RequestMapping(value="/update",method = RequestMethod.PUT,  produces = "application/json")
 	public Customer updateCustomer(@RequestBody Customer customer) throws ApplicationException {
 		logger.log(Level.FINE, "Start");
 		
@@ -89,7 +116,7 @@ public class CustomerController  {
 	 
 	}
 	
-	
+	@ApiOperation(value = "Delete a customer")
 	@RequestMapping(value="/delete/{id}",method = RequestMethod.DELETE)
 	public void deleteCustomer(@PathVariable Long id) throws ApplicationException {
 		logger.log(Level.FINE, "Start");
