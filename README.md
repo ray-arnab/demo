@@ -2,7 +2,7 @@
 Demo
 
 
-##Purpose
+## Purpose
 
 This is a standalone Springboots application which demonstrates the following:
 
@@ -15,7 +15,7 @@ This is a standalone Springboots application which demonstrates the following:
 6. Provision to setup integration test using Selenium
 
 
-##Use cases considered here are simple:
+## Use cases considered here are simple:
 
 1. Get All Customers
 	- a GET request without any parameter fetches details of all customers
@@ -35,16 +35,34 @@ This is a standalone Springboots application which demonstrates the following:
 ## Start the application
 mvn spring-boot:run
 
-## Verify start-up
-### This returns a html saying 'It works'
-http://localhost:8080/api/v1/
 
-### This returns a JSON showing 2 customer records
-http://localhost:8080/api/v1/customer/
+## Unit tests
+mvn clean test
+
+## Integration tests (against a local stand-alone env)
+
+### Prerequisites
+
+-- Application is up and running (see above)
+
+-- You can verify : 	
+	### This returns a html saying 'It works'
+	http://localhost:8080/api/v1/
+	
+	### This returns a JSON showing 2 customer records
+	http://localhost:8080/api/v1/customer/
+
+-- Setup Selenium stand alone v 3.4.0 in local and start
+	java -jar selenium-server-standalone-3.4.0.jar -port 4445
+
+### Run the tests
+mvn clean verify
+
+## Create package (which also runs the unit tests)
+mvn package
 
 
-## Setup Selenium stand alone v 3.4.0 in local and start
-java -jar selenium-server-standalone-3.4.0.jar -port 4445
+
 
 
 ## Run the tests

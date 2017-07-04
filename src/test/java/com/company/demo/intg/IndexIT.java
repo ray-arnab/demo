@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.is;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ITConfig.class)
-public class IndexTest {
+public class IndexIT {
 
     @Autowired
     private WebDriver webDriver;

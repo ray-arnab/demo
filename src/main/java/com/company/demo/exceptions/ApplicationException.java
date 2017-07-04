@@ -2,6 +2,8 @@ package com.company.demo.exceptions;
 
 public class ApplicationException extends Exception {
 
+	private static final long serialVersionUID = -4328520454202288652L;
+	
 	public ApplicationException(){
 		super();
 	}

@@ -4,7 +4,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -39,6 +38,7 @@ public class ITConfig {
     }
 
     private URL getRemoteUrl() throws MalformedURLException {
+    	//return new URL(env.getProperty("selenium.wd.url"));
         return new URL(WD_URL);
     }
 }

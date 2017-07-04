@@ -9,11 +9,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ITConfig.class)
-public class CustomControllerTest {
+public class CustomControllerIT {
 
-    @Autowired
-    private WebDriver webDriver;
-    
+	@Autowired
+    protected WebDriver webDriver;
+	
     private static final String CUST_PATH = "/customer";
 
     
