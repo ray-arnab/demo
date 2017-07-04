@@ -32,21 +32,8 @@ This is a standalone Springboots application which demonstrates the following:
 	- Deletes if customer is existing, responds with error if non existing
 
 
-## Start the application
+## Start a stand alone application
 mvn spring-boot:run
-
-
-## Unit tests
-mvn clean test
-
-## Integration tests (against a local stand-alone env)
-
-### Prerequisites
-
--- Application is up and running (see above)
-
-
--- You can verify : 	
 
 ### This returns a html saying 'It works'
 
@@ -58,16 +45,25 @@ http://localhost:8080/api/v1/
 http://localhost:8080/api/v1/customer/
 
 
--- Setup Selenium stand alone v 3.4.0 in local and start
+
+## Unit tests
+mvn clean test
+
+
+## Integration tests 
+mvn clean verify
+
+### Prerequisites
+
+1. The command above starts a stand alone server at 8080. Please ensure that no other standalone application runs on that port at that stage
+
+2. Setup Selenium stand alone v 3.4.0 in local and start
 
 java -jar selenium-server-standalone-3.4.0.jar -port 4445
 
 
-### Run the tests
-mvn clean verify
 
-
-## Create package (which also runs the unit tests)
+## Create package 
 mvn package
 
 

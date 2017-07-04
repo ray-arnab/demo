@@ -75,6 +75,25 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				
+				<!--  The following snippet is to start and stop the server against which the IT tests will be run -->
+				<executions>
+	                <execution>
+	                    <id>pre-integration-test</id>
+	                    <goals>
+	                        <goal>start</goal>
+	                    </goals>
+	                </execution>
+	                <execution>
+	                    <id>post-integration-test</id>
+	                    <goals>
+	                        <goal>stop</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	            
+            <configuration>
+            </configuration>
 			</plugin>
 			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>

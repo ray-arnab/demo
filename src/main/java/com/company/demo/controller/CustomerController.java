@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.demo.exceptions.ApplicationException;
@@ -116,6 +117,11 @@ public class CustomerController  {
 	}
 	
 	@ApiOperation(value = "Delete a customer")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successfully retrieved customer"),
+	        @ApiResponse(code = 500, message = "Customer does not exist")
+	}
+	)
 	@RequestMapping(value="/delete/{id}",method = RequestMethod.DELETE)
 	public void deleteCustomer(@PathVariable Long id) throws ApplicationException {
 		logger.log(Level.FINE, "Start");
