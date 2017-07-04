@@ -53,14 +53,10 @@ mvn clean test
 ## Integration tests 
 mvn clean verify
 
-### Prerequisites
-
-1. The command above starts a stand alone server at 8080. Please ensure that no other standalone application runs on that port at that stage
-
-2. Setup Selenium stand alone v 3.4.0 in local and start
-
+### Prerequisites: Setup Selenium stand alone v 3.4.0 in local and start
 java -jar selenium-server-standalone-3.4.0.jar -port 4445
 
+Note: The application starts a server at random port against which the tests are run
 
 
 ## Create package 
