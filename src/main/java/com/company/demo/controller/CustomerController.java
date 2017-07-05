@@ -89,7 +89,7 @@ public class CustomerController  {
 	
 	@ApiOperation(value = "Update a customer")
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successfully retrieved customer"),
+			@ApiResponse(code = 200, message = "Successfully updated customer"),
 	        @ApiResponse(code = 500, message = "Customer does not exist")
 	}
 	)
@@ -117,7 +117,7 @@ public class CustomerController  {
 	
 	@ApiOperation(value = "Delete a customer")
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successfully retrieved customer"),
+			@ApiResponse(code = 204, message = "Successfully deleted customer"),
 	        @ApiResponse(code = 500, message = "Customer does not exist")
 	}
 	)

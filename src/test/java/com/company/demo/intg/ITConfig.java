@@ -6,16 +6,23 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+
+import com.company.demo.ApplicationConfig;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 @Configuration
-@Profile("intg")
-//@PropertySource(value = { "classpath:application.properties"})
+@Import(ApplicationConfig.class)
+@PropertySources({
+    @PropertySource("classpath:application.properties"),
+    @PropertySource("classpath:application-${spring.profiles.active}.properties")
+})
 public class ITConfig {
 
     @Autowired
@@ -42,5 +49,5 @@ public class ITConfig {
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
-
+    
 }

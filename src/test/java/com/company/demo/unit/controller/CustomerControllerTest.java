@@ -2,20 +2,11 @@ package com.company.demo.unit.controller;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.company.demo.controller.CustomerController;
 import com.company.demo.model.Customer;
-import com.company.demo.service.CustomerService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,17 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(CustomerController.class)
-public class CustomerControllerTest {
+public class CustomerControllerTest extends BaseTest {
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@MockBean
-	private CustomerService customerService;
-	
-	private static String URL = "/customer/";
 
 	private List<Customer> buildCustomers() {
 		Customer c1 = new Customer(1l, "test1");
