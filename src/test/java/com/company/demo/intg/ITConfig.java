@@ -18,11 +18,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 @Configuration
-@Import(ApplicationConfig.class)
-@PropertySources({
-    @PropertySource("classpath:application.properties"),
-    @PropertySource("classpath:application-${spring.profiles.active}.properties")
-})
+//@Import(ApplicationConfig.class)
+//@PropertySources({
+//    @PropertySource("classpath:application.properties"),
+//    @PropertySource("classpath:application-${spring.profiles.active}.properties")
+//})
 public class ITConfig {
 
     @Autowired
