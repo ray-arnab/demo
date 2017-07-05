@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import com.company.demo.model.Customer;
 import com.company.demo.service.CustomerService;
 
+import java.util.Random;
+
 @Profile("dev")
 @Service
 public class CustomerServiceLocalImpl implements CustomerService {
@@ -23,18 +25,26 @@ public class CustomerServiceLocalImpl implements CustomerService {
 	private static Map<Long, Customer> customerMap;
 	
 	static {
-		
+		random = new Random();
 		customerMap = new HashMap<Long, Customer>();
 
-		Customer cust1 = new Customer(ThreadLocalRandom.current().nextLong(1L, Long.MAX_VALUE), "John Doe");
+		Customer cust1 = new Customer(getRandomId(), "John Doe");
 		customerMap.put(cust1.getId(), cust1);
 		logger.log(Level.INFO, "Cust 1 : " + cust1);
 
-		Customer cust2 = new Customer(ThreadLocalRandom.current().nextLong(1L, Long.MAX_VALUE), "Jane Doe");
+		Customer cust2 = new Customer(getRandomId(), "Jane Doe");
 		customerMap.put(cust2.getId(), cust2);
 		logger.log(Level.INFO, "Cust 2 : " + cust2);
 
 	}
+	
+	private static Random random;
+	private static Long getRandomId() {
+		return (long)(random.nextInt((Integer.MAX_VALUE - 1) + 1) + 1);
+	}
+//	private static Long getRandomId() {
+//		return ThreadLocalRandom.current().nextLong(1L, Long.MAX_VALUE);
+//	}
 
 	public boolean isExisting(long id) {
 
@@ -54,7 +64,7 @@ public class CustomerServiceLocalImpl implements CustomerService {
 	}
 
 	public Customer create(String name) {
-		Customer customer = new Customer(ThreadLocalRandom.current().nextLong(1L, Long.MAX_VALUE), name);
+		Customer customer = new Customer(getRandomId(), name);
 		customerMap.put(customer.getId(), customer);
 		return customer;
 	}
