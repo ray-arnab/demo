@@ -1,6 +1,7 @@
 # Springboots Demo
 
 
+
 ## Purpose
 
 This is a standalone Springboots application which demonstrates the following:
@@ -20,6 +21,7 @@ This is a standalone Springboots application which demonstrates the following:
 5. Provision to version the API suite containing one or more of such APIs
 	
 6. Provision to setup integration test using Selenium across various environments (typically dev, build)
+
 
 
 
@@ -45,9 +47,10 @@ This is a standalone Springboots application which demonstrates the following:
 
 
 
+
 ## Start a stand alone application
-mvn spring-boot:run -Dspring.profiles.active=<env>
-where <env> is dev|intg|uat|staging|prod
+mvn spring-boot:run -Dspring.profiles.active=env
+where env is dev|intg|uat|staging|prod
 
 
 ### This returns a html saying 'It works'
@@ -61,13 +64,16 @@ http://localhost:8080/api/v1/customer/
 
 
 
+
 ## Unit tests
-mvn clean test -Dspring.profiles.active=<env>
+mvn clean test -Dspring.profiles.active=env
+
 
 
 
 ## Integration tests 
-mvn clean verify -Dspring.profiles.active=<env>
+mvn clean verify -Dspring.profiles.active=env
+
 Note: The application starts a server at random port against which the tests are run
 
 ### Prerequisite: Setup Selenium stand alone v 3.4.0 in local and start
@@ -77,8 +83,10 @@ java -jar selenium-server-standalone-3.4.0.jar -port 4445
 
 
 
+
 ## Create package 
 mvn package
+
 
 
 
