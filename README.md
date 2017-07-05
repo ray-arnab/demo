@@ -70,7 +70,7 @@ Note: This endpoints will not be accessible if the application is run without th
 
 
 ## Unit tests
-mvn clean test -Dspring.profiles.active=env,nosecure
+mvn clean test -Dspring.profiles.active=nosecure
 
 Assumption: We test the API responses minus the security
 
