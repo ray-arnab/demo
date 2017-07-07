@@ -104,8 +104,6 @@ java -jar selenium-server-standalone-3.4.0.jar -port 4445
 
 2. Firefox should be installed
 
-3. Download and run the OAuth Auhorization Server (https://github.com/ray-arnab/springboot-oauth-authzserver)
-
 
 
 ## Create package 
