@@ -160,22 +160,23 @@ http://localhost:8080/api/v1/swagger-ui.html
 
 -- Have the server side dump token and the key on the markup of the page. The client side code then picks it up using relevant selectors.
 	
-	Challenges: What if this page is designed for long term caching while the access token expiry time is relatively small?
+Challenges: What if this page is designed for long term caching while the access token expiry time is relatively small?
 
 -- Expose a servlet that does this server side call. Have the client-side call the servlet first and then use the token in API calls.
 	
-	Challenges: The servlet URL, in turn, might require protection in that case.
+Challenges: The servlet URL, in turn, might require protection in that case.
 
 -- Make the token and the expiry time available to the main page through an iframe.
 	
-	Challenges: Can someone else embed the iframe in their domain and use the token and token_expiry values?
+Challenges: Can someone else embed the iframe in their domain and use the token and token_expiry values?
 	To mitigate, use x-frame-options:SAMEORIGIN so that it can be used only within same domain.
 
-	Challenges: Can someone else make a server side Http call to this iframe URL and gather the token and expiry?
-	To mitigate, check the Referer in the request header. If a URL is iframed, its referer is usally the parent page's URL. 
+Challenges: Can someone else make a server side Http call to this iframe URL and gather the token and expiry?
+	To mitigate, check the Referer in the request header. If a URL is iframed, its referer is usually the parent page's URL. 
 	
-	--- In other words, the aim is to ensure that this second page is accessible only as a Iframe, and only when embedded within a page from same domain. 
-	--- Have a meta tag with noindex, nofollow on this 2nd page so that crawlers do not index it while crawling the parent page.
+--- In other words, the aim is to ensure that this second page is accessible only as a Iframe, and only when embedded within a page from same domain. 
+
+--- Have a meta tag with noindex, nofollow on this 2nd page so that crawlers do not index it while crawling the parent page.
 
 - The client application uses this 3rd approach (minus the actual implementation to mitigate the challenges)
 
