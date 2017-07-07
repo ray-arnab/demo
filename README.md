@@ -51,18 +51,25 @@ A Spring profile called 'nosecure' is provided which can be used in conjunction 
 
 
 ## Start a stand alone application
+
+<pre>
 mvn spring-boot:run -Dspring.profiles.active=env,nosecure
+</pre>
+
 where env is dev|intg|uat|staging|prod
 
 
 ### This returns a html saying 'It works'
 
+<pre>
 http://localhost:8080/api/v1/
-
+</pre>
 	
 ### This returns a JSON showing 2 customer records (when run in dev mode)
 
+<pre>
 http://localhost:8080/api/v1/customer/
+</pre>
 
 
 Note: This endpoints will not be accessible if the application is run without the 'nosecure' option.
@@ -70,14 +77,20 @@ Note: This endpoints will not be accessible if the application is run without th
 
 
 ## Unit tests
+
+<pre>
 mvn clean test -Dspring.profiles.active=nosecure
+</pre>
 
 Assumption: We test the API responses minus the security
 
 
 
 ## Integration tests 
+
+<pre>
 mvn clean verify -Dspring.profiles.active=dev,nosecure
+</pre>
 
 Note: The application starts a server at random port against which the tests are run
 
@@ -85,7 +98,9 @@ Note: The application starts a server at random port against which the tests are
 
 1. Setup Selenium stand alone v 3.4.0 in local and start
 
+<pre>
 java -jar selenium-server-standalone-3.4.0.jar -port 4445
+</pre>
 
 2. Firefox should be installed
 
@@ -94,10 +109,74 @@ java -jar selenium-server-standalone-3.4.0.jar -port 4445
 
 
 ## Create package 
-mvn package
 
+<pre>
+mvn package
+</pre>
 
 
 
 ## Swagger docs (from the standalone application)
+
+<pre>
 http://localhost:8080/api/v1/swagger-ui.html
+</pre>
+
+
+
+## Oauth client
+
+### Purpose
+
+- It is to demonstrate how a OAuth protected API (like those provided in this application) can be consumed from the client (browser) side.
+
+- A sample 'client application' is packaged in this API (server) application so as to bypass CORS issue in this simple standalone setup. Normally it would be a different application.
+
+
+### Test it
+
+- Ensure the Oauth authorization server is running (https://github.com/ray-arnab/springboot-oauth-authzserver)
+
+- Start this application in 'dev' mode (without 'nosecure').
+
+- Try accessing the getCustomers API (http://localhost:8080/api/v1/customers/) directly in a browser. Access will be denied.
+
+- Now access http://localhost:8080/api/v1/client/lookup.html. Using AJAX, it fetches all the customers accessing the above API
+
+
+### Client application approach
+
+- The client_credentials grant type, that is used here, involves first sending clientId-clientSecret pair to Authorization Server and getting an access token in return.
+
+- The access token can then be used in the header for the subsequent API requests. 
+
+- The token has a certain expiry time, upon which the token request needs to be sent again to get a new one.
+
+- If the token request is made from the client side, it can compromise the clientId and clientSecret. A rogue application may then use it. Let's say. our use case dictates that the API be used by registered clients only.
+
+- To mitigate, the client application can make the token call from its server side code. But then how does it make it available to its client side for further API calls? 
+
+- Possibilities:
+
+-- Have the server side dump token and the key on the markup of the page. The client side code then picks it up using relevant selectors.
+	
+	Challenges: What if this page is designed for long term caching while the access token expiry time is relatively small?
+
+-- Expose a servlet that does this server side call. Have the client-side call the servlet first and then use the token in API calls.
+	
+	Challenges: The servlet URL, in turn, might require protection in that case.
+
+-- Make the token and the expiry time available to the main page through an iframe.
+	
+	Challenges: Can someone else embed the iframe in their domain and use the token and token_expiry values?
+	To mitigate, use x-frame-options:SAMEORIGIN so that it can be used only within same domain.
+
+	Challenges: Can someone else make a server side Http call to this iframe URL and gather the token and expiry?
+	To mitigate, check the Referer in the request header. If a URL is iframed, its referer is usally the parent page's URL. 
+	
+	--- In other words, the aim is to ensure that this second page is accessible only as a Iframe, and only when embedded within a page from same domain. 
+	--- Have a meta tag with noindex, nofollow on this 2nd page so that crawlers do not index it while crawling the parent page.
+
+- The client application uses this 3rd approach (minus the actual implementation to mitigate the challenges)
+
+- Additionally, it uses the browser's Local Storage to store the token until its expiry, upon which it can pick the token from the iframe
