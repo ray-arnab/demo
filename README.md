@@ -172,13 +172,13 @@ http://localhost:8080/api/v1/swagger-ui.html
    3. Make the token and the expiry time available to the main page through an iframe.
    <br>
 	- Challenges: 
+	<br>
+ 	a) Can someone else embed the iframe in their domain and use the token and token_expiry values?
+ 	To mitigate, use x-frame-options:SAMEORIGIN so that it can be used only within same domain.
 	
- 		a) Can someone else embed the iframe in their domain and use the token and token_expiry values?
- 		To mitigate, use x-frame-options:SAMEORIGIN so that it can be used only within same domain.
-	
-   		b) Can someone else make a server side Http call to this iframe URL or the parent URL and gather the token and expiry?
-   		To mitigate, check request details such as User Agent, Referer, Host to identify requests that are from non browser sources. 
-   		If a URL is iframed, its referer is usually the parent page's URL. 
+   	b) Can someone else make a server side Http call to this iframe URL or the parent URL and gather the token and expiry?
+   	To mitigate, check request details such as User Agent, Referer, Host to identify requests that are from non browser sources. 
+   	If a URL is iframed, its referer is usually the parent page's URL. 
 
 	
    - In other words, the aim is to ensure that this second page is accessible only as a Iframe, and only when embedded within a page from same domain. 
