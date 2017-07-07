@@ -160,21 +160,25 @@ http://localhost:8080/api/v1/swagger-ui.html
 
 
    1. Have the server side dump token and the key on the markup of the page. The client side code then picks it up using relevant selectors.
+   <br>
 	- Challenges: What if this page is designed for long term caching while the access token expiry time is relatively small?
 	<br><br>  
       
    2. Expose a servlet that does this server side call. Have the client-side call the servlet first and then use the token in API calls.
+   <br>
 	- Challenges: The servlet URL, in turn, might require protection in that case.
 	<br><br>  
     
    3. Make the token and the expiry time available to the main page through an iframe.
+   <br>
 	- Challenges: 
 	
  		a) Can someone else embed the iframe in their domain and use the token and token_expiry values?
  		To mitigate, use x-frame-options:SAMEORIGIN so that it can be used only within same domain.
 	
-   		b) Can someone else make a server side Http call to this iframe URL and gather the token and expiry?
-   		To mitigate, check the Referer in the request header. If a URL is iframed, its referer is usually the parent page's URL. 
+   		b) Can someone else make a server side Http call to this iframe URL or the parent URL and gather the token and expiry?
+   		To mitigate, check request details such as User Agent, Referer, Host to identify requests that are from non browser sources. 
+   		If a URL is iframed, its referer is usually the parent page's URL. 
 
 	
    - In other words, the aim is to ensure that this second page is accessible only as a Iframe, and only when embedded within a page from same domain. 
@@ -185,4 +189,4 @@ http://localhost:8080/api/v1/swagger-ui.html
 
 - The client application uses this 3rd approach (minus the actual implementation to mitigate the challenges)
 
-- Additionally, it uses the browser's Local Storage to store the token until its expiry, upon which it can pick the token from the iframe
+- Additionally, it uses the browser's Local Storage to store the token until its expiry, upon which it can pick the token from the iframe. Using LS, the token is available to the client side code much faster.
