@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import com.company.demo.exceptions.ApplicationException;
 import com.company.demo.model.Customer;
 import com.company.demo.service.CustomerService;
 
@@ -46,7 +46,7 @@ public class CustomerServiceLocalImpl implements CustomerService {
 //		return ThreadLocalRandom.current().nextLong(1L, Long.MAX_VALUE);
 //	}
 
-	public boolean isExisting(long id) {
+	public boolean isExisting(long id) throws ApplicationException {
 
 		if (customerMap.containsKey(id)) {
 			return true;
@@ -55,35 +55,26 @@ public class CustomerServiceLocalImpl implements CustomerService {
 		}
 	}
 
-	public List<Customer> getAll() {
+	public List<Customer> getAll() throws ApplicationException {
 		return new ArrayList<Customer>(customerMap.values());
 	}
 
-	public Customer get(long id) {
+	public Customer get(long id) throws ApplicationException {
 		return customerMap.get(id);
 	}
 
-	public Customer create(String name) {
+	public Customer create(String name) throws ApplicationException {
 		Customer customer = new Customer(getRandomId(), name);
 		customerMap.put(customer.getId(), customer);
 		return customer;
 	}
 
-	public Customer update(Customer customer) {
+	public Customer update(Customer customer) throws ApplicationException {
 		customerMap.put(customer.getId(), customer);
 		return customer;
 	}
 
-	public void remove(long id) {
+	public void remove(long id) throws ApplicationException {
 		customerMap.remove(id);
 	}
-
-	
-//	public callToBackEnd(){
-//		String URL="http://local.company.com/..";
-//	    RestTemplate template=new RestTemplate();
-//	 
-//	  	Customer customer = template.getForObject(URL,Customer.class);
-//	    return customer;
-//	}
 }

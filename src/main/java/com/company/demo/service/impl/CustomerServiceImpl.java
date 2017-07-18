@@ -33,35 +33,38 @@ public class CustomerServiceImpl implements CustomerService {
 //    }
 
     
+	@Override
 	public boolean isExisting(long id) {
-
 		return false;
-		
 	}
 
+	@Override
 	public List<Customer> getAll() {
         List<Customer> customerList = restTemplate.getForObject(getAllUrl, List.class);
         
         // Process response if required
-        
         return customerList;
 	}
 
+	@Override
 	public Customer get(long id) {
 		Customer customer = restTemplate.getForObject("", Customer.class, id);
 		return customer;
 	}
 
+	@Override
 	public Customer create(String name) {
 		Customer customer = restTemplate.getForObject("", Customer.class, name);
 		return customer;
 	}
 
+	@Override
 	public Customer update(Customer customer) {
 		Customer customer1 = restTemplate.getForObject("", Customer.class, customer);
 		return customer1;
 	}
 
+	@Override
 	public void remove(long id) {
 		restTemplate.getForObject("",Void.class, id);
 	}
