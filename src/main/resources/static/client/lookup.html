@@ -1,0 +1,154 @@
+<html>
+	<head>
+		<title>Customer lookup</title>
+	</head>
+	<body>
+		<h1>Customer Lookup</h1>
+		<p>This is a demo client application that makes API call from the client side using oauth security</p>
+		
+		<div id="content">
+			<table id="custTable"></table>
+		</div>
+		<div id="stat"></div>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		
+		<script type="text/javascript">
+		
+			var msec = 0;
+			setInterval( function(){
+				msec = msec +1;
+			}, 1);
+		
+			
+			
+		
+			var tokenDefer = $.Deferred();
+		    var _token;
+		 
+			tokenDefer.done(function( value ) {
+		  		_token = value;
+		  		
+		  		$('#stat').append("Token resolved at " + msec + "ms <br>");
+		  		console.log("Token on resolve: " + value);
+		  		
+		  	});
+		
+			tokenDefer.fail(function( value ) {
+				_token = value;
+		  		console.log("Token on reject : " + value);
+		  		
+		  	});
+			
+			
+			function getTokenFromLS(){
+				
+				if(isLSSupported()) {
+				
+					var lsToken = localStorage.getItem("_token");
+					var lsTokenExpiry = localStorage.getItem("_tokenExpiry");
+					
+					if(lsToken && lsTokenExpiry) {
+						var lsDate = new Date(lsTokenExpiry);
+						var date = new Date();
+						if(lsDate.getTime() > date.getTime()) {
+							if(!_token) // _token is not set, so LS value is resolved
+							{
+								tokenDefer.resolve( lsToken );
+							} 
+							else if(_token && lsToken != _token) // _token is set from before, and is different from LS
+							{
+								localStorage.setItem("_token",_token);	
+							}	
+						}
+						
+					} /*else {
+						if(_token) // Token not availble in LS. But _token is set. So setting it in LS
+						{
+							localStorage.setItem("_token",_token);
+						}
+					}*/
+				}
+			}
+			
+			
+			function getTokenFromFrame() {
+				$('#stat').append("Iframe loaded at " + msec + "ms <br>");
+
+				var iframe = document.getElementById('tokenFrame');
+				if(iframe) {
+		        	var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+		        	var frToken = innerDoc.getElementById("token").innerText;
+		        	var frTokenExpiry = innerDoc.getElementById("expiry").innerText;
+
+		        	// check if token is already available
+			        if(!_token || frToken != _token)	// _token is not set or is wrong, so Frame value is resolved 
+			        {
+			        	tokenDefer.resolve(frToken);
+					}
+			        	
+		        	// Update LS if supported
+			        if(isLSSupported()) {
+			        	var lsToken = localStorage.getItem("_token");
+			        	if(!lsToken || lsToken != frToken) {
+			        		localStorage.setItem("_token",frToken);
+			        		var d = new Date();
+			        		d.setSeconds(d.getSeconds() + parseInt(frTokenExpiry));
+			        		localStorage.setItem("_tokenExpiry",d);
+			        	}
+			        }
+				}
+		    }
+		
+			
+			$.when(tokenDefer).done(function ( token ) {
+			    
+				$('#stat').append("Requesting customers at " + msec + "ms <br>");
+				console.log( "Token before requesting : " + token ); 
+			    
+			    $.ajax({
+		        	type: "GET",
+		        	url: "/api/v1/customer/", 
+		        	dataType: 'json',
+		        	headers: {
+		        	    "Authorization": "Bearer " + token
+		        	},
+		        	success: function(result){
+		        		$('#stat').append("Response at " + msec + "ms <br>");
+		        		var trHTML = '';
+		                $.each(result, function (i, item) {
+		                    trHTML += '<tr><td>' + item.id + '</td><td>' + item.name + '</td></tr>';
+		                });
+		                $('#custTable').html(trHTML);
+		                $('#stat').append("Render complete at " + msec + "ms <br>");
+		        	},
+		        	error: function (error) {
+		                  console.log("Error : " + error);
+		            }
+		        });
+			});
+			
+			
+			$(document).ready(function(){
+				
+				getTokenFromLS();
+				
+			});
+			
+			
+			
+			function isLSSupported() {
+				try {
+			        localStorage.setItem("_____test", "data");
+			        localStorage.removeItem("_____test", "data");
+			    } catch (e) {
+			        return false;
+			    } 
+			    return true;
+			}
+
+		</script>
+		
+		<iframe style="display: none;" id="tokenFrame" src="/api/v1/client/fetchToken" onload="getTokenFromFrame()"></iframe>
+	</body>
+</html>

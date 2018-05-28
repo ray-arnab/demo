@@ -2,20 +2,11 @@ package com.company.demo.unit.controller;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.company.demo.controller.CustomerController;
 import com.company.demo.model.Customer;
-import com.company.demo.service.CustomerService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,17 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(CustomerController.class)
-public class CustomerControllerTest {
+public class CustomerControllerTest extends BaseTest {
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@MockBean
-	private CustomerService customerService;
-	
-	private static String URL = "/customer/";
 
 	private List<Customer> buildCustomers() {
 		Customer c1 = new Customer(1l, "test1");
@@ -138,6 +120,10 @@ public class CustomerControllerTest {
 		verifyResponseAndCode(response2, HttpStatus.METHOD_NOT_ALLOWED.value());
 	}
 
+	
+	
+	
+	
 	// **********************************************
 	// ** GetCustomer
 	// **********************************************
@@ -171,21 +157,20 @@ public class CustomerControllerTest {
 
 		// Prepare
 		List<Customer> custList = buildCustomers();
-		when(customerService.get(any(Long.class))).thenReturn(custList.get(0));
-
+		when(customerService.get(any(Long.class))).thenReturn(null);
+		
 		// Execute
-		MvcResult result = null;
-		try {
-			result = mockMvc.perform(
-					MockMvcRequestBuilders.get(URL + "/" + Long.MAX_VALUE).accept(MediaType.APPLICATION_JSON_UTF8))
-					.andReturn();
-		} catch (Exception e) {
-			assertNotNull("Result is null", result);
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.get(URL + "/" + Long.MAX_VALUE).accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
 
-			// Verify Response status
-			MockHttpServletResponse response = result.getResponse();
-			verifyResponseAndCode(response, HttpStatus.INTERNAL_SERVER_ERROR.value());
-		}
+		// Verify Response status
+		MockHttpServletResponse response = result.getResponse();
+		verifyResponseAndCode(response, HttpStatus.NOT_FOUND.value());
+
+		// Verify that service method was called once
+		verify(customerService).get(any(Long.class));
+
+		// TODO: Assert blank body?
 	}
 	
 	@Test
@@ -237,6 +222,8 @@ public class CustomerControllerTest {
 	}
 	
 	
+	
+	
 
 	// **********************************************
 	// ** AddCustomer
@@ -259,7 +246,7 @@ public class CustomerControllerTest {
 
 		// Verify Response status
 		MockHttpServletResponse response = result.getResponse();
-		verifyResponseAndCode(response, HttpStatus.OK.value());
+		verifyResponseAndCode(response, HttpStatus.CREATED.value());
 
 		// Verify that service method was called once
 		verify(customerService).create(any(String.class));
@@ -384,16 +371,20 @@ public class CustomerControllerTest {
 		
 		// Execute
 		String updateCustJson = "{\"id\":3,\"name\":\"test3\"}";
-		MvcResult result = null;
-		try {
-			result = mockMvc
-					.perform(MockMvcRequestBuilders.put(URL + "/update")
-							.contentType(MediaType.APPLICATION_JSON_UTF8)
-							.content(updateCustJson)
-							.accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
-		} catch (Exception e) {
-			assertTrue(e.getMessage().contains("does not exist"));
-		}
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.put(URL + "/update")
+						.contentType(MediaType.APPLICATION_JSON_UTF8)
+						.content(updateCustJson)
+						.accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+
+		// Verify Response status
+		MockHttpServletResponse response = result.getResponse();
+		verifyResponseAndCode(response, HttpStatus.NOT_FOUND.value());
+
+		// Verify that service method was called once
+		verify(customerService).isExisting(any(Long.class));
+
+		// TODO: Verify JSON structure and values?
 	}
 	
 	@Test
@@ -494,13 +485,45 @@ public class CustomerControllerTest {
 		//when(customerService.remove(any(Long.class))).thenReturn();
 
 		// Execute
-		MvcResult result = null;
-		try {
-			result = mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/delete/3").accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
-		} catch (Exception e) {
-			assertTrue(e.getMessage().contains("does not exist"));
-		}
-				
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.delete(URL + "/delete/5").accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+
+		// Verify Response status
+		MockHttpServletResponse response = result.getResponse();
+		verifyResponseAndCode(response, HttpStatus.NOT_FOUND.value());
+
+		// Verify that service method was called once
+		verify(customerService).isExisting(any(Long.class));
+
+		// TODO: Verify JSON structure and values?
+		
+	}
+	
+	@Test
+	public void deleteCustomerTest_idParamMissing() throws Exception {
+		
+		// Prepare
+		List<Customer> custList = buildCustomers();
+		when(customerService.get(any(Long.class))).thenReturn(custList.get(0));
+		
+		when(customerService.isExisting(any(Long.class))).thenReturn(true);
+		
+		//when(customerService.remove(any(Long.class))).thenReturn();
+
+		// Execute
+		MvcResult result = mockMvc
+				.perform(MockMvcRequestBuilders.delete(URL + "/delete/").accept(MediaType.APPLICATION_JSON_UTF8)).andReturn();
+
+		// Verify Response status
+		MockHttpServletResponse response = result.getResponse();
+		verifyResponseAndCode(response, HttpStatus.METHOD_NOT_ALLOWED.value());
+
+		// Verify that service method was called once
+//		verify(customerService).remove(any(Long.class));
+
+		// Verify JSON structure and values
+		assertNotNull("Response Content is null", response.getContentAsString());
+		assertTrue(response.getContentAsString().length() == 0);
 	}
 	
 }
