@@ -15,7 +15,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.4.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
@@ -24,6 +24,8 @@
 		<java.version>1.8</java.version>
 		<selenium.version>3.4.0</selenium.version>
 		<swagger.version>2.6.1</swagger.version>
+		<docker.image.prefix>rayarnab82</docker.image.prefix>
+		<dockerfile-maven-version>1.4.2</dockerfile-maven-version>
 	</properties>
 
 	<dependencies>
@@ -40,174 +42,136 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
-		<!--  Oauth based security -->		
+
+		<!-- Oauth based security -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
 		</dependency>
-		
-		
-		<!--  Selenium based Intg Testing -->
+
+
+		<!-- Selenium based Intg Testing -->
 		<dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-remote-driver</artifactId>
-            <version>${selenium.version}</version>
-            <scope>test</scope>
-        </dependency>        
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-support</artifactId>
-            <version>${selenium.version}</version>
-            <scope>test</scope>
-        </dependency>
-        
-        
-        <!--  Rest Assured Intg Testing -->
-        <dependency>
-		    <groupId>io.rest-assured</groupId>
-		    <artifactId>rest-assured</artifactId>
-		    <version>3.0.3</version>
-		    <scope>test</scope>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-remote-driver</artifactId>
+			<version>${selenium.version}</version>
+			<scope>test</scope>
 		</dependency>
-		<!-- 
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-support</artifactId>
+			<version>${selenium.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<!-- Rest Assured Intg Testing -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
-		    <artifactId>json-path</artifactId>
-		    <version>3.0.3</version>
+			<artifactId>rest-assured</artifactId>
+			<version>3.0.3</version>
+			<scope>test</scope>
 		</dependency>
-        <dependency>
-		    <groupId>io.rest-assured</groupId>
-		    <artifactId>json-schema-validator</artifactId>
-		    <version>3.0.3</version>
-		    <scope>test</scope>
-		</dependency>
-		 -->
-         
-        <!--  Swagger UI --> 
+		<!-- <dependency> <groupId>io.rest-assured</groupId> <artifactId>json-path</artifactId> 
+			<version>3.0.3</version> </dependency> <dependency> <groupId>io.rest-assured</groupId> 
+			<artifactId>json-schema-validator</artifactId> <version>3.0.3</version> <scope>test</scope> 
+			</dependency> -->
+
+		<!-- Swagger UI -->
 		<dependency>
-		    <groupId>io.springfox</groupId>
-		    <artifactId>springfox-swagger2</artifactId>
-		    <version>${swagger.version}</version>
-		    <scope>compile</scope>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swagger.version}</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-		    <groupId>io.springfox</groupId>
-		    <artifactId>springfox-swagger-ui</artifactId>
-		    <version>${swagger.version}</version>
-		    <scope>compile</scope>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swagger.version}</version>
+			<scope>compile</scope>
 		</dependency>
 
 
-		
-		
-		<!--  Needed for the sample client application -->
+
+
+		<!-- Needed for the sample client application -->
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-		
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
 	</dependencies>
-	
-	<!-- 
-	<profiles>
-	    <profile>
-	        <id>dev</id>
-	        <activation>
-	            <activeByDefault>true</activeByDefault>
-	            <property>
-	                <name>spring.profiles.active</name>
-	                <value>dev</value>
-	            </property>
-	        </activation>
-	    </profile>
-	    <profile>
-	        <id>intg</id>
-	        <activation>
-	            <property>
-	                <name>spring.profiles.active</name>
-	                <value>intg</value>
-	            </property>
-	        </activation>   
-	    </profile>
-	    <profile>
-	        <id>uat</id>
-	        <activation>
-	            <property>
-	                <name>spring.profiles.active</name>
-	                <value>uat</value>
-	            </property>
-	        </activation>   
-	    </profile>
-	    <profile>
-	        <id>staging</id>
-	        <activation>
-	            <property>
-	                <name>spring.profiles.active</name>
-	                <value>staging</value>
-	            </property>
-	        </activation>   
-	    </profile>
-	    <profile>
-	        <id>prod</id>
-	        <activation>
-	            <property>
-	                <name>spring.profiles.active</name>
-	                <value>prod</value>
-	            </property>
-	        </activation>   
-	    </profile>
-	</profiles>
-	 -->
+
+	<!-- <profiles> <profile> <id>dev</id> <activation> <activeByDefault>true</activeByDefault> 
+		<property> <name>spring.profiles.active</name> <value>dev</value> </property> 
+		</activation> </profile> <profile> <id>intg</id> <activation> <property> 
+		<name>spring.profiles.active</name> <value>intg</value> </property> </activation> 
+		</profile> <profile> <id>uat</id> <activation> <property> <name>spring.profiles.active</name> 
+		<value>uat</value> </property> </activation> </profile> <profile> <id>staging</id> 
+		<activation> <property> <name>spring.profiles.active</name> <value>staging</value> 
+		</property> </activation> </profile> <profile> <id>prod</id> <activation> 
+		<property> <name>spring.profiles.active</name> <value>prod</value> </property> 
+		</activation> </profile> </profiles> -->
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				
-				<!--  The following snippet is to start and stop the server against which the IT tests will be run -->
-				<!-- 
-				<executions>
-	                <execution>
-	                    <id>pre-integration-test</id>
-	                    <goals>
-	                        <goal>start</goal>
-	                    </goals>
-	                </execution>
-	                <execution>
-	                    <id>post-integration-test</id>
-	                    <goals>
-	                        <goal>stop</goal>
-	                    </goals>
-	                </execution>
-	            </executions>
-	             -->
-            <configuration>
-            </configuration>
+
+				<!-- The following snippet is to start and stop the server against which 
+					the IT tests will be run -->
+				<!-- <executions> <execution> <id>pre-integration-test</id> <goals> <goal>start</goal> 
+					</goals> </execution> <execution> <id>post-integration-test</id> <goals> 
+					<goal>stop</goal> </goals> </execution> </executions> -->
+				<configuration>
+				</configuration>
 			</plugin>
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*IT.java</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*IT.java</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>${dockerfile-maven-version}</version>
+				<executions>
+					<execution>
+						<id>default</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>build</goal>
+							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<repository>${docker.image.prefix}/${project.artifactId}</repository>
+					<tag>${project.version}</tag>
+				<!-- 	<dockerHost>http://192.168.99.100:2375</dockerHost>  -->
+					<buildArgs>
+						<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+					</buildArgs>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

@@ -2,6 +2,7 @@ package com.company.demo.client;
 
 import java.util.logging.Logger;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +26,7 @@ public class ClientController  {
 	
 	private final Logger logger = Logger.getLogger(this.getClass().getName());
 	
-	private static final String TOKEN_URL = "http://localhost:8081/auth/oauth/token";
+//	private static final String TOKEN_URL = "http://localhost:8081/auth/oauth/token";
 	
 	private static MultiValueMap<String, String> requestBody;
 	private static MultiValueMap<String, String> requestHeaders;
@@ -44,12 +45,14 @@ public class ClientController  {
 	}
 	     
 
+	@Value("${oauth.token.url}")
+	private String tokenUrl;
 	
 	@RequestMapping("/fetchToken")
     public String fetchToken(Model model) {
 		
         RestTemplate restTemplate = new RestTemplate();
-        OauthToken oauthToken = restTemplate.postForObject(TOKEN_URL, httpEntity, OauthToken.class);
+        OauthToken oauthToken = restTemplate.postForObject(tokenUrl, httpEntity, OauthToken.class);
         logger.info(oauthToken.toString());
 		
 		String token = oauthToken.getAccess_token();
